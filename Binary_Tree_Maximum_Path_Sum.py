@@ -40,3 +40,40 @@ class TreeNode:
                     node.right = child.pop()
 
         return root
+
+    def max_path_sum(root):
+
+        if root is None:
+            raise ValueError("Корень дерева не может быть None")
+
+        max_sum = -10**18  # аналог отрицательной бесконечности
+
+        def dfs(node):
+
+            # рекурсивный обход дерева сверху вниз
+            nonlocal max_sum
+            if node is None:
+                return 0
+
+            # рекурсивно вычисляем вклад левого поддерева
+            left_gain = dfs(node.left)
+            if left_gain < 0:
+                left_gain = 0
+
+            # рекурсивно вычисляем вклад правого поддерева
+            right_gain = dfs(node.right)
+            if right_gain < 0:
+                right_gain = 0
+
+            # полный путь через текущий узел
+            current_path_sum = node.val + left_gain + right_gain
+
+            # обновим глобальный максимум
+            if current_path_sum > max_sum:
+                max_sum = current_path_sum
+
+           # возвращаем максимум для одного пути (левый или правый)
+            return node.val + (left_gain if left_gain > right_gain else right_gain)
+
+        dfs(root)
+        return max_sum
